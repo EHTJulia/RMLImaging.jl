@@ -1,4 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 EHTImages = "a1be09f2-4a9d-4f8b-a1e3-812015e25e30"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 RMLImaging = "4d23c25a-f84e-4dc0-9513-4942a305df7e"

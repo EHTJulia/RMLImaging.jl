@@ -2,7 +2,7 @@
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "1d78adaf41afb3ca3491e1e14a8f3f8b7288a0e7"
+project_hash = "bd1d1bdb4cf53f68ccd45f02e93ff6a3bc4690e5"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -743,7 +743,7 @@ deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[deps.RMLImaging]]
-deps = ["ChainRulesCore", "EHTImages", "EHTModels", "EHTNCDBase", "EHTUtils", "FLoops", "NFFT", "Optimization", "OptimizationOptimJL", "Zygote"]
+deps = ["ChainRulesCore", "EHTImages", "EHTModels", "EHTNCDBase", "EHTUtils", "FLoops", "NFFT", "Optimization", "OptimizationOptimJL", "Pkg", "PyPlot", "Zygote"]
 path = ".."
 uuid = "4d23c25a-f84e-4dc0-9513-4942a305df7e"
 version = "0.1.0"
