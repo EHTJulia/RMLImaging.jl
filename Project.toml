@@ -25,6 +25,7 @@ NFFT = "0.13"
 julia = "1.8"
 Optimization = "3"
 OptimizationOptimJL = "0.1"
+PyPlot = "2"
 Zygote = "0.6"
 
 [extras]
