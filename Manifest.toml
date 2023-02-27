@@ -232,8 +232,6 @@ version = "1.6.0"
 [[EHTImages]]
 deps = ["DimensionalData", "DocStringExtensions", "EHTModels", "EHTNCDBase", "EHTUtils", "FFTW", "FLoops", "Formatting", "Logging", "Missings", "NCDatasets", "OrderedCollections", "Parameters", "Pkg", "PyPlot", "Unitful", "UnitfulAngles", "UnitfulAstro"]
 git-tree-sha1 = "9ee22b6d212fb6ded937719e3d10cc91b407ef67"
-repo-rev = "main"
-repo-url = "https://github.com/EHTJulia/EHTImages.jl"
 uuid = "a1be09f2-4a9d-4f8b-a1e3-812015e25e30"
 version = "0.1.0"
 
@@ -512,6 +510,12 @@ deps = ["Dates", "Logging"]
 git-tree-sha1 = "cedb76b37bc5a6c702ade66be44f831fa23c681e"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "1.0.0"
+
+[[MKL]]
+deps = ["Artifacts", "Libdl", "LinearAlgebra", "MKL_jll"]
+git-tree-sha1 = "99d923f343425a26eb4f1596d2a6a1118635d73a"
+uuid = "33e6dc65-8f57-5167-99aa-e5a354878fb2"
+version = "0.6.0"
 
 [[MKL_jll]]
 deps = ["Artifacts", "IntelOpenMP_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "Pkg"]
