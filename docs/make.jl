@@ -12,20 +12,20 @@ DocMeta.setdocmeta!(RMLImaging, :DocTestSetup, :(using RMLImaging); recursive=tr
 makedocs(;
     modules=[RMLImaging],
     authors="Kazunori Akiyama",
-    repo="https://github.com/RMLImaging/RMLImaging.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/EHTJulia/RMLImaging.jl/blob/{commit}{path}#{line}",
     sitename="RMLImaging.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://RMLImaging.github.io/RMLImaging.jl",
+        canonical="https://ehtjulia.github.io/RMLImaging.jl",
         edit_link="main",
-        assets=String[],
+        assets=String[]
     ),
     pages=[
         "Home" => "index.md",
-    ],
+    ]
 )
 
 deploydocs(;
     repo="github.com/RMLImaging/RMLImaging.jl",
-    devbranch="main",
+    devbranch="main"
 )
