@@ -32,3 +32,24 @@ function normalize(imagemodel::AbstractImage2DModel, x::AbstractArray, totalflux
     x_norm = x_linear * totalflux / x_totalflux
     return transform_linear_inverse(imagemodel, x_norm)
 end
+
+function Base.map(image::EHTImages.AbstractEHTImage, imagemodel::AbstractImage2DModel, x::AbstractArray)
+    imageout = copy(image)
+    map!(imageout, imagemodel, x)
+    return imageout
+end
+
+function Base.map(image::EHTImages.AbstractEHTImage, imagemodel::AbstractImage2DModel, x::AbstractArray, idx)
+    imageout = copy(image)
+    map!(imageout, imagemodel, x, idx)
+    return imageout
+end
+
+function Base.map!(image::EHTImages.AbstractEHTImage, imagemodel::AbstractImage2DModel, x::AbstractArray)
+    map!(image, imagemodel, x, imagemodel.orgidx)
+end
+
+function Base.map!(image::EHTImages.AbstractEHTImage, imagemodel::AbstractImage2DModel, x::AbstractArray, idx)
+    x_linear = transform_linear_forward(imagemodel, x)
+    setindex!(image.data, x_linear, :, :, idx...)
+end

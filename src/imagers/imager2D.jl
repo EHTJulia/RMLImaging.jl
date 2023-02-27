@@ -41,3 +41,24 @@ function lossfunc(x, imager::Imager2D)
     return c
 end
 
+"""
+    map(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::AbstractArray[, idx])
+"""
+function Base.map(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::AbstractArray)
+    return map(image, imager.skymodel, x)
+end
+
+function Base.map(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::AbstractArray, idx)
+    return map(image, imager.skymodel, x, idx)
+end
+
+"""
+    map!(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::AbstractArray[, idx])
+"""
+function Base.map!(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::AbstractArray)
+    map!(image, imager.skymodel, x)
+end
+
+function Base.map!(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::AbstractArray, idx)
+    map!(image, imager.skymodel, x, idx)
+end
