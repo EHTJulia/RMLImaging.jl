@@ -22,8 +22,9 @@ EHTModels = "0.1"
 EHTUtils = "0.1"
 FLoops = "0.2"
 NFFT = "0.13"
-OptimizationOptimJL = "0.1"
 julia = "1.8"
+OptimizationOptimJL = "0.1"
+Zygote = "0.6"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
