@@ -16,6 +16,7 @@ struct TSV <: AbstractRegularizer
     domain::AbstractRegularizerDomain
 end
 
+
 """
     tsv_base_real(I::AbstractArray)
 
@@ -30,11 +31,11 @@ Base function of the istropic total squared Variation.
 
     value = 0
     for iy in 1:ny, ix in 1:nx-1
-        ΔI = I[ix+1, iy] - I[ix, iy]
+        @inbounds ΔI = I[ix+1, iy] - I[ix, iy]
         value += ΔI^2
     end
     for iy in 1:ny-1, ix in 1:nx
-        ΔI = I[ix, iy+1] - I[ix, iy]
+        @inbounds ΔI = I[ix, iy+1] - I[ix, iy]
         value += ΔI^2
     end
     return value
@@ -55,7 +56,7 @@ end
     ny = size(I, 2)
     grad = zeros(nx, ny)
     for iy in 1:ny, ix in 1:nx
-        grad[ix, iy] = tsv_base_real_grad(I, ix, iy)
+        @inbounds grad[ix, iy] = tsv_base_real_grad(I, ix, iy)
     end
     return grad
 end

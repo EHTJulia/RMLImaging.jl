@@ -30,13 +30,13 @@ function tv_base_real(I::AbstractArray)
     value = 0
     for iy = 1:ny, ix = 1:nx
         if ix < nx
-            ΔIx = I[ix+1, iy] - I[ix, iy]
+            @inbounds ΔIx = I[ix+1, iy] - I[ix, iy]
         else
             ΔIx = 0
         end
 
         if iy < ny
-            ΔIy = I[ix, iy+1] - I[ix, iy]
+            @inbounds ΔIy = I[ix, iy+1] - I[ix, iy]
         else
             ΔIy = 0
         end
@@ -61,7 +61,7 @@ end
     ny = size(I, 2)
     grad = zeros(nx, ny)
     for iy = 1:ny, ix = 1:nx
-        grad[ix, iy] = tv_base_real_grad(I, ix, iy)
+        @inbounds grad[ix, iy] = tv_base_real_grad(I, ix, iy)
     end
     return grad
 end
@@ -86,14 +86,14 @@ end
     if i2 > nx
         ΔIx = 0.0
     else
-        ΔIx = I[i2, j1] - I[i1, j1]
+        @inbounds ΔIx = I[i2, j1] - I[i1, j1]
     end
 
     #   ΔIy = I[i,j+1] - I[i,j]
     if j2 > ny
         ΔIy = 0.0
     else
-        ΔIy = I[i1, j2] - I[i1, j1]
+        @inbounds ΔIy = I[i1, j2] - I[i1, j1]
     end
 
     # compute variation and its gradient
@@ -107,13 +107,13 @@ end
     #
     if (i0 > 0)
         # ΔIx = I[i,j] - I[i-1,j]
-        ΔIx = I[i1, j1] - I[i0, j1]
+        @inbounds ΔIx = I[i1, j1] - I[i0, j1]
 
         # ΔIy = I[i-1,j+1] - I[i-,j]
         if j2 > ny
             ΔIy = 0
         else
-            ΔIy = I[i0, j2] - I[i0, j1]
+            @inbounds ΔIy = I[i0, j2] - I[i0, j1]
         end
 
         # compute variation and its gradient
@@ -131,11 +131,11 @@ end
         if i2 > nx
             ΔIx = 0
         else
-            ΔIx = I[i2, j0] - I[i1, j0]
+            @inbounds ΔIx = I[i2, j0] - I[i1, j0]
         end
 
         # ΔIy = I[i,j] - I[i,j-1]
-        ΔIy = I[i1, j1] - I[i1, j0]
+        @inbounds ΔIy = I[i1, j1] - I[i1, j0]
 
         # compute variation and its gradient
         tv = √(ΔIx^2 + ΔIy^2)
