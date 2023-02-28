@@ -90,6 +90,14 @@ function Base.map(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::Abstra
     return map(image, imager.skymodel, x, idx)
 end
 
+function Base.map(image::EHTImages.AbstractEHTImage, imager::Imager2D, solution::Optimization.SciMLBase.OptimizationSolution)
+    return map(image, imager.skymodel, solution.u)
+end
+
+function Base.map(image::EHTImages.AbstractEHTImage, imager::Imager2D, solution::Optimization.SciMLBase.OptimizationSolution, idx)
+    return map(image, imager.skymodel, solution.u, idx)
+end
+
 """
     map!(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::AbstractArray[, idx])
 """
@@ -99,4 +107,12 @@ end
 
 function Base.map!(image::EHTImages.AbstractEHTImage, imager::Imager2D, x::AbstractArray, idx)
     map!(image, imager.skymodel, x, idx)
+end
+
+function Base.map!(image::EHTImages.AbstractEHTImage, imager::Imager2D, solution::Optimization.SciMLBase.OptimizationSolution)
+    map!(image, imager.skymodel, solution.u)
+end
+
+function Base.map!(image::EHTImages.AbstractEHTImage, imager::Imager2D, solution::Optimization.SciMLBase.OptimizationSolution, idx)
+    map!(image, imager.skymodel, solution.u, idx)
 end
