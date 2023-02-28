@@ -2,7 +2,7 @@
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "95e9af51dc410a7ca42b08c9a04fe91616f1955d"
+project_hash = "7e650772700df615f4f4b2f2784f2003bd05e8da"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -81,6 +81,18 @@ version = "0.7.1"
 git-tree-sha1 = "eb4cb44a499229b3b8426dcfb5dd85333951ff90"
 uuid = "fa961155-64e5-5f13-b03f-caf6b980ea82"
 version = "0.4.2"
+
+[[deps.CFITSIO]]
+deps = ["CFITSIO_jll"]
+git-tree-sha1 = "8425c47db102577eefb93cb37b4480e750116b0d"
+uuid = "3b1b4be9-1499-4b22-8d78-7db3344d1961"
+version = "1.4.1"
+
+[[deps.CFITSIO_jll]]
+deps = ["Artifacts", "JLLWrappers", "LibCURL_jll", "Libdl", "Pkg", "Zlib_jll"]
+git-tree-sha1 = "9c91a9358de42043c3101e3a29e60883345b0b39"
+uuid = "b3e40c51-02ae-5482-8a39-3ace5868dcf4"
+version = "4.0.0+0"
 
 [[deps.CFTime]]
 deps = ["Dates", "Printf"]
@@ -234,32 +246,26 @@ uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 version = "1.6.0"
 
 [[deps.EHTImages]]
-deps = ["DimensionalData", "DocStringExtensions", "EHTModels", "EHTNCDBase", "EHTUtils", "FFTW", "FLoops", "Formatting", "Logging", "Missings", "NCDatasets", "OrderedCollections", "Parameters", "Pkg", "PyPlot", "Unitful", "UnitfulAngles", "UnitfulAstro"]
-git-tree-sha1 = "9ee22b6d212fb6ded937719e3d10cc91b407ef67"
+deps = ["Dates", "DimensionalData", "DocStringExtensions", "EHTModels", "EHTNCDBase", "EHTUtils", "FFTW", "FITSIO", "FLoops", "Formatting", "Logging", "Missings", "NCDatasets", "OrderedCollections", "Parameters", "Pkg", "PyPlot", "Unitful", "UnitfulAngles", "UnitfulAstro"]
+git-tree-sha1 = "1c2201916a7df3f6428eb8db136aed50b291db30"
 uuid = "a1be09f2-4a9d-4f8b-a1e3-812015e25e30"
-version = "0.1.0"
+version = "0.1.1"
 
 [[deps.EHTModels]]
 deps = ["Accessors", "DocStringExtensions", "EHTUtils", "NFFT"]
 git-tree-sha1 = "89a98ac9d2369582d4b393ea61fc0f16e37f641a"
-repo-rev = "main"
-repo-url = "https://github.com/EHTJulia/EHTModels.jl"
 uuid = "aba06f68-8285-4329-b7bf-b3157c6bc00b"
 version = "0.1.2"
 
 [[deps.EHTNCDBase]]
 deps = ["NCDatasets"]
-git-tree-sha1 = "aa9190aa3d19f6c94264f79af99e2da5aecc36d7"
-repo-rev = "main"
-repo-url = "https://github.com/EHTJulia/EHTNCDBase.jl"
+git-tree-sha1 = "cd499d4eb498cb8208c32e5ff65fddde66a61d1c"
 uuid = "0d1a6071-c6ae-40ce-b68e-43bf1c0beb66"
-version = "0.1.1"
+version = "0.1.0"
 
 [[deps.EHTUtils]]
 deps = ["Logging", "PhysicalConstants", "Unitful", "UnitfulAngles", "UnitfulAstro"]
-git-tree-sha1 = "70806a5e0de11b9707ff134e337dfc6db2fa6f4b"
-repo-rev = "main"
-repo-url = "https://github.com/EHTJulia/EHTUtils.jl"
+git-tree-sha1 = "25bd6a4de49f105cf2d354113c47dee6b4ad7968"
 uuid = "9d0fa6a6-ae25-4c2e-8152-6c4b7f2016aa"
 version = "0.1.0"
 
@@ -289,6 +295,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "c6033cc3892d0ef5bb9cd29b7f2f0331ea5184ea"
 uuid = "f5851436-0d7a-5f13-b9de-f02708fd171a"
 version = "3.3.10+0"
+
+[[deps.FITSIO]]
+deps = ["CFITSIO", "Printf", "Reexport", "Tables"]
+git-tree-sha1 = "3b342f0c3bb37371e1e2ad37672a9c960f9abcb6"
+uuid = "525bcba6-941b-5504-bd06-fd0dc1a4d2eb"
+version = "0.17.0"
 
 [[deps.FLoops]]
 deps = ["BangBang", "Compat", "FLoopsBase", "InitialValues", "JuliaVariables", "MLStyle", "Serialization", "Setfield", "Transducers"]
