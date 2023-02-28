@@ -2,7 +2,7 @@
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "7e650772700df615f4f4b2f2784f2003bd05e8da"
+project_hash = "4209bdca2a263ca6a175867e591c5a8831757600"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -247,9 +247,9 @@ version = "1.6.0"
 
 [[deps.EHTImages]]
 deps = ["Dates", "DimensionalData", "DocStringExtensions", "EHTModels", "EHTNCDBase", "EHTUtils", "FFTW", "FITSIO", "FLoops", "Formatting", "Logging", "Missings", "NCDatasets", "OrderedCollections", "Parameters", "Pkg", "PyPlot", "Unitful", "UnitfulAngles", "UnitfulAstro"]
-git-tree-sha1 = "1c2201916a7df3f6428eb8db136aed50b291db30"
+git-tree-sha1 = "3261905f95a62eba1c3374e982013c2c6816553b"
 uuid = "a1be09f2-4a9d-4f8b-a1e3-812015e25e30"
-version = "0.1.1"
+version = "0.1.2"
 
 [[deps.EHTModels]]
 deps = ["Accessors", "DocStringExtensions", "EHTUtils", "NFFT"]
@@ -264,10 +264,10 @@ uuid = "0d1a6071-c6ae-40ce-b68e-43bf1c0beb66"
 version = "0.1.0"
 
 [[deps.EHTUtils]]
-deps = ["Logging", "PhysicalConstants", "Unitful", "UnitfulAngles", "UnitfulAstro"]
-git-tree-sha1 = "25bd6a4de49f105cf2d354113c47dee6b4ad7968"
+deps = ["Dates", "Logging", "PhysicalConstants", "Unitful", "UnitfulAngles", "UnitfulAstro"]
+git-tree-sha1 = "771a8270bb64c6d93f4d538f44d6068e51b54c72"
 uuid = "9d0fa6a6-ae25-4c2e-8152-6c4b7f2016aa"
-version = "0.1.0"
+version = "0.1.1"
 
 [[deps.EnumX]]
 git-tree-sha1 = "bdb1942cd4c45e3c678fd11569d5cccd80976237"
