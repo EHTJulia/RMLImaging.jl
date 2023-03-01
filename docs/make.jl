@@ -20,6 +20,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/RMLImaging/RMLImaging.jl",
+    repo="github.com/EHTJulia/RMLImaging.jl",
     devbranch="main"
 )
