@@ -15,8 +15,6 @@ MKL = "33e6dc65-8f57-5167-99aa-e5a354878fb2"
 NFFT = "efe261a4-0d2b-5849-be55-fc731d526b0d"
 Optimization = "7f7a1694-90dd-40f0-9382-eb1efda571ba"
 OptimizationOptimJL = "36348300-93cb-4f02-beb5-3c3902f8871e"
-Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
-PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
@@ -31,7 +29,6 @@ MKL = "0.6"
 NFFT = "0.13"
 Optimization = "3"
 OptimizationOptimJL = "0.1"
-PyPlot = "2"
 Zygote = "0.6"
 julia = "1.8"
 

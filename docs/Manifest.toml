@@ -2,7 +2,7 @@
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "beda1667547e4df8d66e47cb88a524d15775df50"
+project_hash = "39bde1ad1d889126f0f78d85e5b11a3892a85484"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -49,9 +49,9 @@ version = "1.1.1"
 
 [[deps.ArrayInterface]]
 deps = ["Adapt", "LinearAlgebra", "Requires", "SnoopPrecompile", "SparseArrays", "SuiteSparse"]
-git-tree-sha1 = "4d9946e51e24f5e509779e3e2c06281a733914c2"
+git-tree-sha1 = "ec9c36854b569323551a6faf2f31fda15e3459a7"
 uuid = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
-version = "7.1.0"
+version = "7.2.0"
 
 [[deps.ArrayInterfaceCore]]
 deps = ["LinearAlgebra", "SnoopPrecompile", "SparseArrays", "SuiteSparse"]
@@ -231,9 +231,9 @@ version = "1.13.0"
 
 [[deps.DimensionalData]]
 deps = ["Adapt", "ArrayInterfaceCore", "ConstructionBase", "Dates", "Extents", "IntervalSets", "IteratorInterfaceExtensions", "LinearAlgebra", "Random", "RecipesBase", "SparseArrays", "Statistics", "TableTraits", "Tables"]
-git-tree-sha1 = "b09a33e447a553f6fc943bca30b679d369d20132"
+git-tree-sha1 = "5ebee0abcf1c3c514c67bd642f9c0b8192ad30ef"
 uuid = "0703355e-b756-11e9-17c0-8b28908087d0"
-version = "0.24.4"
+version = "0.24.5"
 
 [[deps.Distributed]]
 deps = ["Random", "Serialization", "Sockets"]
@@ -765,7 +765,7 @@ deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[deps.RMLImaging]]
-deps = ["ChainRulesCore", "EHTImages", "EHTModels", "EHTNCDBase", "EHTUtils", "FFTW", "FLoops", "MKL", "NFFT", "Optimization", "OptimizationOptimJL", "Pkg", "PyPlot", "Zygote"]
+deps = ["ChainRulesCore", "EHTImages", "EHTModels", "EHTNCDBase", "EHTUtils", "FFTW", "FLoops", "MKL", "NFFT", "Optimization", "OptimizationOptimJL", "Zygote"]
 path = ".."
 uuid = "4d23c25a-f84e-4dc0-9513-4942a305df7e"
 version = "0.1.0"
