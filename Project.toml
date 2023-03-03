@@ -5,6 +5,8 @@ version = "0.1.0"
 
 [deps]
 ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DimensionalData = "0703355e-b756-11e9-17c0-8b28908087d0"
 EHTImages = "a1be09f2-4a9d-4f8b-a1e3-812015e25e30"
 EHTModels = "aba06f68-8285-4329-b7bf-b3157c6bc00b"
 EHTNCDBase = "0d1a6071-c6ae-40ce-b68e-43bf1c0beb66"
@@ -15,6 +17,7 @@ MKL = "33e6dc65-8f57-5167-99aa-e5a354878fb2"
 NFFT = "efe261a4-0d2b-5849-be55-fc731d526b0d"
 Optimization = "7f7a1694-90dd-40f0-9382-eb1efda571ba"
 OptimizationOptimJL = "36348300-93cb-4f02-beb5-3c3902f8871e"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]

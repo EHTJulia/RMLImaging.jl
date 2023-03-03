@@ -16,6 +16,8 @@ struct TSV <: AbstractRegularizer
     domain::AbstractRegularizerDomain
 end
 
+# function label
+functionlabel(::TSV) = :tsv
 
 """
     tsv_base_real(I::AbstractArray)

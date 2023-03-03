@@ -16,6 +16,8 @@ struct L1Norm <: AbstractRegularizer
     domain::AbstractRegularizerDomain
 end
 
+# function label
+functionlabel(::L1Norm) = :l1norm
 
 """
     l1norm(I::AbstractArray)

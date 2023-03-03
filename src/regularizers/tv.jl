@@ -16,6 +16,9 @@ struct TV <: AbstractRegularizer
     domain::AbstractRegularizerDomain
 end
 
+# function label
+functionlabel(::TV) = :tv
+
 """
     tv_base_real(I::AbstractArray)
 

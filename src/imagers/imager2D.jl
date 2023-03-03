@@ -8,7 +8,6 @@ struct Imager2D <: AbstractImager
     regularlizers
 end
 
-
 """
     ImagingProblem(imager::Imager2D, x0::AbstractArray)
 
@@ -40,8 +39,8 @@ Returns the initialized Optimization.OptimizationProblem object.
 - `imager::Imager2D`: the imager
 - `x0::AbstractArray`: the initial image in the parameter domain.
 """
-function ImagingProblem(imager::Imager2D, initialimage::AbstractEHTImage)
-    x0 = initialize(imager.skymodel, image)
+function ImagingProblem(imager::Imager2D, initimage::AbstractEHTImage)
+    x0 = initialize(imager.skymodel, initimage)
     return ImagingProblem(imager::Imager2D, x0::AbstractArray)
 end
 
@@ -77,6 +76,60 @@ function lossfunc(x, imager::Imager2D)
     end
 
     return c
+end
+
+
+"""
+    evaluate(imager::Imager2D, image::AbstractEHTImage)
+
+Evaluate chisquares and regularizers from the input image
+
+# Arguments
+- `imager::Imager2D`: RML Imaging Setting
+- `image::AbstractEHTImage`: the image
+"""
+function evaluate(imager::Imager2D, image::AbstractEHTImage)
+    return evaluate(imager, initialize(imager.skymodel, image))
+end
+
+"""
+    evaluate(imager::Imager2D, x::AbstractArray)
+
+Evaluate chisquares and regularizers from the input image parameters
+
+# Arguments
+- `imager::Imager2D`: RML Imaging Setting
+- `x::AbstractArray`: the image parameters
+"""
+function evaluate(imager::Imager2D, x::AbstractArray)
+    # get the linear scale image
+    x_linear = transform_linear_forward(imager.skymodel, x)
+
+    # Get the Stokes I image
+    V = forward(imager.ft, x_linear)
+
+    # initialize dict
+    outdict = OrderedDict()
+
+    # Initialize cost function
+    c = 0
+
+    # Chisquares
+    for datamodel in imager.datamodels
+        chisq = chisquare(datamodel, V)
+        outdict[functionlabel(datamodel)] = chisq
+        c += chisq
+    end
+
+    # Regularization functions
+    for reg in imager.regularlizers
+        regcost = cost(reg, imager.skymodel, x)
+        outdict[functionlabel(reg)] = regcost
+        c += regcost
+    end
+
+    outdict[:cost] = c
+    return outdict
 end
 
 """

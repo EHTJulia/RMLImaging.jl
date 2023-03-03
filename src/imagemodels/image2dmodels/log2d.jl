@@ -25,7 +25,7 @@ function transform_linear_forward(imagemodel::LogImage2DModel, x::AbstractArray)
 end
 
 function transform_linear_inverse(imagemodel::LogImage2DModel, x::AbstractArray)
-    return log.(real.(x))
+    return log.(abs.(real.(x)))
 end
 
 # Initialization

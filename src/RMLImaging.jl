@@ -2,6 +2,8 @@ module RMLImaging
 
 using Base
 using ChainRulesCore
+using DataFrames
+using DimensionalData
 using EHTImages
 using EHTModels
 using EHTUtils
@@ -9,6 +11,7 @@ using FLoops
 using NFFT
 using Optimization
 using OptimizationOptimJL
+using OrderedCollections
 using Zygote
 
 # data model

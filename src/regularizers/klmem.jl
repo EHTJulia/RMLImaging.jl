@@ -17,6 +17,8 @@ struct KLEntropy <: AbstractRegularizer
     domain::AbstractRegularizerDomain
 end
 
+functionlabel(::KLEntropy) = :klentropy
+
 """
     klentropy_base(x::AbstractArray, p::AbstractArray)
 
