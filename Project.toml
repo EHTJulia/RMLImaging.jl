@@ -22,6 +22,7 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
 ChainRulesCore = "1"
+DimensionalData = "0.24"
 EHTImages = "0.1"
 EHTModels = "0.1"
 EHTNCDBase = "0.1"
