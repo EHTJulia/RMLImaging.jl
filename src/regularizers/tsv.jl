@@ -16,54 +16,38 @@ struct TSV <: AbstractRegularizer
     domain::AbstractRegularizerDomain
 end
 
+
 # function label
 functionlabel(::TSV) = :tsv
 
+
 """
-    tsv_base_real(I::AbstractArray)
+    tsv_base_real_pixel(I::AbstractArray, ix::Int64, iy::Int64)
 
-Base function of the istropic total squared Variation.
-
-# Arguments
-- `I::AbstractArray`: the input two dimensional real image
+Return the squared variation for the given pixel.
 """
-@inline function tsv_base_real(I::AbstractArray)::Float64
-    nx = size(I, 1)
-    ny = size(I, 2)
+@inline function tsv_base_real_pixel(I::AbstractArray, ix::Int64, iy::Int64)::Float64
+    if ix < size(I, 1)
+        @inbounds ΔIx = I[ix+1, iy] - I[ix, iy]
+    else
+        ΔIx = 0
+    end
 
-    value = 0
-    for iy in 1:ny, ix in 1:nx-1
-        @inbounds ΔI = I[ix+1, iy] - I[ix, iy]
-        value += ΔI^2
+    if iy < size(I, 2)
+        @inbounds ΔIy = I[ix, iy+1] - I[ix, iy]
+    else
+        ΔIy = 0
     end
-    for iy in 1:ny-1, ix in 1:nx
-        @inbounds ΔI = I[ix, iy+1] - I[ix, iy]
-        value += ΔI^2
-    end
-    return value
+
+    return ΔIx^2 + ΔIy^2
 end
 
-function ChainRulesCore.rrule(::typeof(tsv_base_real), x::AbstractArray)
-    y = tsv_base_real(x)
-    function pullback(Δy)
-        f̄ = NoTangent()
-        v̄ = @thunk(tsv_base_real_grad(x) * Δy)
-        return f̄, v̄
-    end
-    return y, pullback
-end
+"""
+    tsv_base_real_grad_pixel(I::AbstractArray, ix::Int64, iy::Int64)
 
-@inline function tsv_base_real_grad(I::AbstractArray)
-    nx = size(I, 1)
-    ny = size(I, 2)
-    grad = zeros(nx, ny)
-    for iy in 1:ny, ix in 1:nx
-        @inbounds grad[ix, iy] = tsv_base_real_grad(I, ix, iy)
-    end
-    return grad
-end
-
-@inline function tsv_base_real_grad(I::AbstractArray, ix::Int64, iy::Int64)::Float64
+Return the gradient of the squared variation for the given pixel.
+"""
+@inline function tsv_base_real_grad_pixel(I::AbstractArray, ix::Int64, iy::Int64)::Float64
     nx = size(I, 1)
     ny = size(I, 2)
 
@@ -78,29 +62,68 @@ end
 
     # For ΔIx = I[i+1,j] - I[i,j]
     if i2 < nx + 1
-        grad += -2 * (I[i2, j1] - I[i1, j1])
+        @inbounds grad += -2 * (I[i2, j1] - I[i1, j1])
     end
 
     # For ΔIy = I[i,j+1] - I[i,j]
     if j2 < ny + 1
-        grad += -2 * (I[i1, j2] - I[i1, j1])
+        @inbounds grad += -2 * (I[i1, j2] - I[i1, j1])
     end
 
     # For ΔIx = I[i,j] - I[i-1,j]
     if i0 > 0
-        grad += +2 * (I[i1, j1] - I[i0, j1])
+        @inbounds grad += +2 * (I[i1, j1] - I[i0, j1])
     end
 
     # For ΔIy = I[i,j] - I[i,j-1]
     if j0 > 0
-        grad += +2 * (I[i1, j1] - I[i1, j0])
+        @inbounds grad += +2 * (I[i1, j1] - I[i1, j0])
     end
 
     return grad
 end
 
 """
-    tsv_base_real(I::AbstractArray, w::Number)
+    tsv_base_real(I::AbstractArray; ex::FLoops's Executor)::Float64
+
+Base function of the istropic total squared Variation.
+
+# Arguments
+- `I::AbstractArray`: the input two dimensional real image
+"""
+@inline function tsv_base_real(I::AbstractArray)::Float64
+    value = 0.0
+    for iy = 1:size(I, 2), ix = 1:size(I, 1)
+        value += tsv_base_real_pixel(I, ix, iy)
+    end
+    return value
+end
+
+
+function ChainRulesCore.rrule(::typeof(tsv_base_real), x::AbstractArray)
+    y = tsv_base_real(x)
+    function pullback(Δy)
+        f̄bar = NoTangent()
+        xbar = @thunk(tsv_base_real_grad(x) * Δy)
+        return f̄bar, xbar
+    end
+    return y, pullback
+end
+
+
+@inline function tsv_base_real_grad(I::AbstractArray)
+    nx = size(I, 1)
+    ny = size(I, 2)
+    grad = zeros(nx, ny)
+    for iy in 1:ny, ix in 1:nx
+        @inbounds grad[ix, iy] = tsv_base_real_grad_pixel(I, ix, iy)
+    end
+    return grad
+end
+
+
+"""
+    tsv_base_real(I::AbstractArray, w::Number; ex::Floop's Executor)
 
 Base function of the istropic total squared Variation.
 
@@ -112,10 +135,23 @@ Base function of the istropic total squared Variation.
     return w * tsv_base_real(I)
 end
 
-function evaluate(::LinearDomain, reg::TSV, skymodel::AbstractImage2DModel, x::AbstractArray)
-    x_linear = transform_linear_forward(skymodel, x)
-    return tsv_base_real(x_linear, reg.weight)
+
+function ChainRulesCore.rrule(::typeof(tsv_base_real), x::AbstractArray, w::Number)
+    y = tsv_base_real(x, w)
+    function pullback(Δy)
+        f̄bar = NoTangent()
+        xbar = @thunk(w .* tsv_base_real_grad(x) .* Δy)
+        wbar = NoTangent()
+        return f̄bar, xbar, wbar
+    end
+    return y, pullback
 end
+
+
+function evaluate(::LinearDomain, reg::TSV, skymodel::AbstractImage2DModel, x::AbstractArray)
+    return tsv_base_real(transform_linear_forward(skymodel, x), reg.weight)
+end
+
 
 function evaluate(::ParameterDomain, reg::TSV, skymodel::AbstractImage2DModel, x::AbstractArray)
     return tsv_base_real(x, reg.weight)

@@ -27,10 +27,7 @@ Base function of the l1norm.
 # Arguments
 - `I::AbstractArray`: the image
 """
-@inline function l1norm(x::AbstractArray)
-    return sum(abs.(x))
-end
-
+@inline l1norm(x::AbstractArray) = @inbounds sum(abs.(x))
 
 """
     l1norm(I::AbstractArray, w::Number)
@@ -41,29 +38,12 @@ Base function of the l1norm.
 - `I::AbstractArray`: the image
 - `w::Number`: the regularization weight
 """
-@inline function l1norm(x::AbstractArray, w::Number)
-    return w * l1norm(x)
-end
-
-
-"""
-    l1norm(I::AbstractArray, w::Number)
-
-Base function of the l1norm.
-
-# Arguments
-- `I::AbstractArray`: the image
-- `w::AbstractArray`: the regularization weight which should have the same size with I
-"""
-@inline function l1norm(x::AbstractArray, w::AbstractArray)
-    return l1norm(w .* x)
-end
+@inline l1norm(x::AbstractArray, w::Number) = w * l1norm(x)
 
 
 """
     evaluate(::AbstractRegularizer, skymodel::AbstractImage2DModel, x::AbstractArray)
 """
 function evaluate(::LinearDomain, reg::L1Norm, skymodel::AbstractImage2DModel, x::AbstractArray)
-    x_linear = transform_linear_forward(skymodel, x)
-    return l1norm(x_linear, reg.weight)
+    return l1norm(transform_linear_forward(skymodel, x), reg.weight)
 end

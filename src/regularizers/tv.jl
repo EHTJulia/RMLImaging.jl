@@ -20,56 +20,35 @@ end
 functionlabel(::TV) = :tv
 
 """
-    tv_base_real(I::AbstractArray)
+    tv_base_real_pixel(I::AbstractArray, ix::Int64, iy::Int64)
 
-Base function of the istropic total variation.
-
-# Arguments
-- `I::AbstractArray`: the input two dimensional real image
+Evaluate the istropic variation term for the given pixel.
 """
-function tv_base_real(I::AbstractArray)
+@inline function tv_base_real_pixel(I::AbstractArray, ix::Int64, iy::Int64)::Float64
     nx = size(I, 1)
     ny = size(I, 2)
-    value = 0
-    for iy = 1:ny, ix = 1:nx
-        if ix < nx
-            @inbounds ΔIx = I[ix+1, iy] - I[ix, iy]
-        else
-            ΔIx = 0
-        end
 
-        if iy < ny
-            @inbounds ΔIy = I[ix, iy+1] - I[ix, iy]
-        else
-            ΔIy = 0
-        end
-
-        value += √(ΔIx^2 + ΔIy^2)
+    if ix < nx
+        @inbounds ΔIx = I[ix+1, iy] - I[ix, iy]
+    else
+        ΔIx = 0
     end
-    return value
+
+    if iy < ny
+        @inbounds ΔIy = I[ix, iy+1] - I[ix, iy]
+    else
+        ΔIy = 0
+    end
+
+    return √(ΔIx^2 + ΔIy^2)
 end
 
-function ChainRulesCore.rrule(::typeof(tv_base_real), x::AbstractArray)
-    y = tv_base_real(x)
-    function pullback(Δy)
-        f̄ = NoTangent()
-        v̄ = @thunk(tv_base_real_grad(x) * Δy)
-        return f̄, v̄
-    end
-    return y, pullback
-end
+"""
+    tv_base_real_pixel(I::AbstractArray, ix::Int64, iy::Int64)
 
-@inline function tv_base_real_grad(I::AbstractArray)
-    nx = size(I, 1)
-    ny = size(I, 2)
-    grad = zeros(nx, ny)
-    for iy = 1:ny, ix = 1:nx
-        @inbounds grad[ix, iy] = tv_base_real_grad(I, ix, iy)
-    end
-    return grad
-end
-
-@inline function tv_base_real_grad(I::AbstractArray, ix::Int64, iy::Int64)::Float64
+Evaluate the gradient of the istropic variation term for the given pixel.
+"""
+@inline function tv_base_real_grad_pixel(I::AbstractArray, ix::Int64, iy::Int64)::Float64
     nx = size(I, 1)
     ny = size(I, 2)
 
@@ -151,7 +130,45 @@ end
 end
 
 """
-    tv_base_real(I::AbstractArray, w::Number)
+    tv_base_real(I::AbstractArray; ex::FLoops's Executor)
+
+Base function of the istropic total variation.
+
+# Arguments
+- `I::AbstractArray`: the input two dimensional real image
+"""
+@inline function tv_base_real(I::AbstractArray)
+    value = 0.0
+    for iy = 1:size(I, 2), ix = 1:size(I, 1)
+        value += tv_base_real_pixel(I, ix, iy)
+    end
+    return value
+end
+
+# Gradient for tv_base_real: Chain Rule
+function ChainRulesCore.rrule(::typeof(tv_base_real), x::AbstractArray)
+    y = tv_base_real(x)
+    function pullback(Δy)
+        f̄bar = NoTangent()
+        xbar = @thunk(tv_base_real_grad(x) .* Δy)
+        return f̄bar, xbar
+    end
+    return y, pullback
+end
+
+# Gradient for tv_base_real: Gradient Function
+@inline function tv_base_real_grad(I::AbstractArray)
+    nx = size(I, 1)
+    ny = size(I, 2)
+    grad = zeros(nx, ny)
+    for iy = 1:ny, ix = 1:nx
+        @inbounds grad[ix, iy] = tv_base_real_grad_pixel(I, ix, iy)
+    end
+    return grad
+end
+
+"""
+    tv_base_real(I::AbstractArray, w::Number; ex::FLoops's Executor)
 
 Base function of the istropic total variation.
 
@@ -159,15 +176,28 @@ Base function of the istropic total variation.
 - `I::AbstractArray`: the input two dimensional real image
 - `w::Number`: the regularization weight
 """
-function tv_base_real(I::AbstractArray, w::Number)
+@inline function tv_base_real(I::AbstractArray, w::Number)
     return w * tv_base_real(I)
 end
 
-function evaluate(::LinearDomain, reg::TV, skymodel::AbstractImage2DModel, x::AbstractArray)
-    x_linear = transform_linear_forward(skymodel, x)
-    return tv_base_real(x_linear, reg.weight)
+function ChainRulesCore.rrule(::typeof(tv_base_real), x::AbstractArray, w::Number)
+    y = tv_base_real(x, w)
+    function pullback(Δy)
+        f̄bar = NoTangent()
+        xbar = @thunk(w .* tv_base_real_grad(x) .* Δy)
+        wbar = NoTangent()
+        return f̄bar, xbar, wbar
+    end
+    return y, pullback
 end
 
+# Evaluation functions
+#   LinearDomain
+function evaluate(::LinearDomain, reg::TV, skymodel::AbstractImage2DModel, x::AbstractArray)
+    return tv_base_real(transform_linear_forward(skymodel, x), reg.weight)
+end
+
+#   ParameteDomain
 function evaluate(::ParameterDomain, reg::TV, skymodel::AbstractImage2DModel, x::AbstractArray)
     return tv_base_real(x, reg.weight)
 end

@@ -27,20 +27,15 @@ Base function of the l1norm.
 # Arguments
 - `I::AbstractArray`: the image
 """
-function klentropy_base(x::AbstractArray, p::AbstractArray)::Float64
-    nx = length(x)
-
+@inline function klentropy_base(x::AbstractArray, p::AbstractArray)::Float64
     # compute the total flux
-    totalflux = sum(x)
-
-    # compute the KL divergence
-    xnorm = x ./ totalflux
-    value = sum(xnorm .* log.(xnorm ./ p))
-
-    return value
+    totalflux = sum_floop(x, ThreadedEx())
+    # compute xlogx
+    @inbounds xnorm = x ./ totalflux
+    @inbounds xlogx = xnorm .* log.(xnorm ./ p)
+    return sum(xlogx)
 end
 
 function evaluate(::LinearDomain, reg::KLEntropy, skymodel::AbstractImage2DModel, x::AbstractArray)::Float64
-    x_linear = transform_linear_forward(skymodel, x)
-    return klentropy_base(x_linear, reg.prior)
+    return klentropy_base(transform_linear_forward(skymodel, x), reg.prior)
 end
