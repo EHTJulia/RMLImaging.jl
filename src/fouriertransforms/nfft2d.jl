@@ -26,7 +26,6 @@ struct SingleNFFT2D <: FourierTransform2D
     Vkernel
 end
 
-
 function SingleNFFT2D(imagemodel, uvcoverage::SingleUVCoverage)::SingleNFFT2D
     # important constant: DO NOT CHANGE
     ftsign = +1   # Radio Astronomy data assumes the positive exponent in the forward operation V = Σ I exp(+2πux)
@@ -46,12 +45,12 @@ function SingleNFFT2D(imagemodel, uvcoverage::SingleUVCoverage)::SingleNFFT2D
     # k-vector for NFFT
     k = fill(-1.0 * ftsign, (2, Nuv)) # first -1 is to cancel the negative exponent (i.e. -2πfn) in the forward operation
     for iuv in 1:Nuv
-        k[1, iuv] *= uΔx[iuv]
-        k[2, iuv] *= vΔy[iuv]
+        @inbounds k[1, iuv] *= uΔx[iuv]
+        @inbounds k[2, iuv] *= vΔy[iuv]
     end
 
     # factor for the phase center
-    Vkernel = exp.(1im * ftsign * 2π * (uΔx * (Nx / 2 + 1 - xref) + vΔy * (Ny / 2 + 1 - yref)))
+    @inbounds Vkernel = exp.(1im .* ftsign .* 2π .* (uΔx .* (Nx / 2 + 1 - xref) .+ vΔy .* (Ny / 2 + 1 - yref)))
 
     # pulse function will be added here.
 
@@ -62,32 +61,29 @@ function SingleNFFT2D(imagemodel, uvcoverage::SingleUVCoverage)::SingleNFFT2D
     return SingleNFFT2D(nfft_forward, nfft_adjoint, Vkernel)
 end
 
-
-function forward(ft::SingleNFFT2D, x::Matrix{Float64})
+@inline function forward(ft::SingleNFFT2D, x::Matrix{Float64})
     return forward(ft, complex(x))
 end
 
-
-function forward(ft::SingleNFFT2D, x::Matrix{ComplexF64})
-    v = ft.nfft_forward * x
-    return v .* ft.Vkernel
+@inline function forward(ft::SingleNFFT2D, x::Matrix{ComplexF64})
+    @inbounds v = ft.nfft_forward * x
+    @inbounds v .*= ft.Vkernel
+    return v
 end
-
 
 function ChainRulesCore.rrule(::typeof(forward), ft::SingleNFFT2D, x::Matrix{ComplexF64})
     y = forward(ft, x)
     function pullback(Δy)
-        f̄ = NoTangent()
+        f̄bar = NoTangent()
         ftbar = NoTangent()
-        v̄ = @thunk(adjoint(ft, Δy))
-        return f̄, ftbar, v̄
+        xbar = @thunk(adjoint(ft, Δy))
+        return f̄bar, ftbar, xbar
     end
     return y, pullback
 end
 
-
-function adjoint(ft::SingleNFFT2D, v::Vector)
-    vinp = v ./ ft.Vkernel
-    xadj = ft.nfft_adjoint * vinp
-    return real(xadj)
+@inline function adjoint(ft::SingleNFFT2D, v::Vector)
+    @inbounds vinp = v ./ ft.Vkernel
+    @inbounds xadj = real(ft.nfft_adjoint * vinp)
+    return xadj
 end
