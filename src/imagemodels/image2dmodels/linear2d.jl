@@ -15,13 +15,8 @@ function LinearImage2DModel(image::EHTImages.AbstractEHTImage, idx=[1, 1, 1])
     AbstractImage2DModel(LinearImage2DModel, image, idx)
 end
 
-function transform_linear_forward(imagemodel::LinearImage2DModel, x::AbstractArray)
-    return x
-end
-
-function transform_linear_inverse(imagemodel::LinearImage2DModel, x::AbstractArray)
-    return x
-end
+@inline transform_linear_forward(imagemodel::LinearImage2DModel, x::AbstractArray) = x
+@inline transform_linear_inverse(imagemodel::LinearImage2DModel, x::AbstractArray) = x
 
 function initialize(imagemodel::LinearImage2DModel)
     return zeros(imagemodel.imagesize)

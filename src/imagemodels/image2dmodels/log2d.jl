@@ -1,8 +1,6 @@
 export LogImage2DModel
 
-
 # Definition of the model
-
 struct LogImage2DModel <: AbstractImage2DModel
     imagesize
     pixelsize
@@ -19,14 +17,11 @@ function LogImage2DModel(image::EHTImages.AbstractEHTImage, idx=[1, 1, 1])
     AbstractImage2DModel(LogImage2DModel, image, idx)
 end
 
-# Transoformers from/to linear-scale images
-function transform_linear_forward(imagemodel::LogImage2DModel, x::AbstractArray)
-    return exp.(x)
-end
+# Transoformer to linear-scale images
+@inline transform_linear_forward(::LogImage2DModel, x::AbstractArray) = @inbounds exp.(x)
 
-function transform_linear_inverse(imagemodel::LogImage2DModel, x::AbstractArray)
-    return log.(abs.(real.(x)))
-end
+# Transformer from linear-scale images
+@inline transform_linear_inverse(::LogImage2DModel, x::AbstractArray) = @inbounds log.(abs.(real(x)))
 
 # Initialization
 function initialize(imagemodel::LogImage2DModel, totalflux::Number=1.0)
