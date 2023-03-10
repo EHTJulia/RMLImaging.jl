@@ -8,35 +8,35 @@ export VisibilityDataModel
 struct VisibilityDataModel <: AbstractDataModel
     data
     σ
+    variance
     designmatrix
     weight
     Ndata
 end
 
+# Function Label
 functionlabel(::VisibilityDataModel) = :visibility
 
-function evaluate(datamodel::VisibilityDataModel, V::Vector{ComplexF64})
-    return getindex(V, datamodel.designmatrix)
+# Evaluate
+function evaluate(datamodel::VisibilityDataModel, V::Vector{ComplexF64}; keywords...)
+    return @inbounds getindex(V, datamodel.designmatrix)
 end
 
-function residual(datamodel::VisibilityDataModel, V::Vector{ComplexF64})
+# residual
+function residual(datamodel::VisibilityDataModel, V::Vector{ComplexF64}; keywords...)
     model = evaluate(datamodel, V)
-    return (model .- datamodel.data) ./ datamodel.σ
+    @inbounds resid = (model .- datamodel.data) ./ datamodel.σ
+    return resid
 end
 
-function chisquare(datamodel::VisibilityDataModel, V::Vector{ComplexF64})
+# chisquare
+function chisquare(datamodel::VisibilityDataModel, V::Vector{ComplexF64}; keywords...)
     model = evaluate(datamodel, V)
-
-    # variance
-    var = datamodel.σ .^ 2
-
-    # residual
-    squaredresidual = abs.(model .- datamodel.data) .^ 2 ./ var
-
-    return sum(squaredresidual) / datamodel.Ndata
+    @inbounds sqresid = abs.(model .- datamodel.data) .^ 2 ./ datamodel.variance
+    return sum(sqresid) / datamodel.Ndata
 end
 
-function get_stokesI(visds::DimStack)
+function get_stokesI(visds::DimStack; keywords...)
     nch, nspw, ndata, npol = size(visds)
 
     # new visibility data set
@@ -79,7 +79,7 @@ function get_stokesI(visds::DimStack)
     return newds
 end
 
-function visds2df(visds::DimStack)
+function visds2df(visds::DimStack; keywords...)
     # get data size
     nch, nspw, ndata, npol = size(visds)
     nvis = nch * nspw * ndata * npol
@@ -90,6 +90,7 @@ function visds2df(visds::DimStack)
     df[!, :v] = zeros(Float64, nvis)
     df[!, :Vcmp] = zeros(ComplexF64, nvis)
     df[!, :σ] = zeros(Float64, nvis)
+    df[!, :σ2] = zeros(Float64, nvis)
     df[!, :flag] = zeros(Float64, nvis)
 
     # fill out dataframe
@@ -100,6 +101,7 @@ function visds2df(visds::DimStack)
         df[i, :v] = visds[:v].data[ich, ispw, idata]
         df[i, :Vcmp] = visds[:visibility].data[ich, ispw, idata, ipol]
         df[i, :σ] = visds[:sigma].data[ich, ispw, idata, ipol]
+        df[i, :σ2] = visds[:sigma].data[ich, ispw, idata, ipol]^2
         df[i, :flag] = visds[:flag].data[ich, ispw, idata, ipol]
         i += 1
     end
@@ -111,13 +113,14 @@ function visds2df(visds::DimStack)
     return df
 end
 
-function initialize_datamodels(df::DataFrame)
+function initialize_datamodels(df::DataFrame; keywords...)
     uv = df.u .+ 1im .* df.v
     uvc, reverse_idx = unique_ids(uv)
     uvcov = SingleUVCoverage(real(uvc), imag(uvc), reverse_idx)
     visdatamodel = VisibilityDataModel(
         df.Vcmp,
         df.σ,
+        df.σ2,
         reverse_idx,
         1,
         length(df.Vcmp)
@@ -125,7 +128,7 @@ function initialize_datamodels(df::DataFrame)
     return uvcov, visdatamodel
 end
 
-function initialize_datamodels(visds::DimStack)
+function initialize_datamodels(visds::DimStack; keywords...)
     ds = get_stokesI(visds)
     df = visds2df(ds)
     uvcov, visdatamodel = initialize_datamodels(df)
