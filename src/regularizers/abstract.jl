@@ -26,6 +26,7 @@ export ParameterDomain
 """
 abstract type AbstractRegularizer end
 
+
 # computing domain
 abstract type AbstractRegularizerDomain end
 
@@ -33,8 +34,10 @@ abstract type AbstractRegularizerDomain end
 struct LinearDomain <: AbstractRegularizerDomain end
 struct ParameterDomain <: AbstractRegularizerDomain end
 
+
 # function to get the label for regularizer
 functionlabel(::AbstractRegularizer) = :namelessregularizer
+
 
 # function to get domain and hyper parameter
 """
@@ -44,12 +47,14 @@ Return the computing domain of the given regularizer.
 """
 domain(reg::AbstractRegularizer) = reg.domain
 
+
 """
 hyperparameter(reg::AbstractRegularizer) = reg.hyperparameter
 
 Return the hyperparameter of the given regularizer.
 """
 hyperparameter(reg::AbstractRegularizer) = reg.hyperparameter
+
 
 """
     evaluate(domain::AbstractRegularizerDomain, reg::AbstractRegularizer, skymodel::AbstractImageModel, x::AbstractArray)

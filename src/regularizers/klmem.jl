@@ -27,7 +27,7 @@ Base function of the l1norm.
 # Arguments
 - `I::AbstractArray`: the image
 """
-@inline function klentropy_base(x::AbstractArray, p::AbstractArray)::Float64
+@inline function klentropy_base(x::AbstractArray, p::AbstractArray)
     # compute the total flux
     totalflux = sum_floop(x, ThreadedEx())
     # compute xlogx
@@ -36,6 +36,6 @@ Base function of the l1norm.
     return sum(xlogx)
 end
 
-function evaluate(::LinearDomain, reg::KLEntropy, skymodel::AbstractImage2DModel, x::AbstractArray)::Float64
+function evaluate(::LinearDomain, reg::KLEntropy, skymodel::AbstractImage2DModel, x::AbstractArray)
     return klentropy_base(transform_linear_forward(skymodel, x), reg.prior)
 end

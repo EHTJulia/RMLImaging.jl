@@ -20,11 +20,11 @@ end
 functionlabel(::TV) = :tv
 
 """
-    tv_base_real_pixel(I::AbstractArray, ix::Int64, iy::Int64)
+    tv_base_pixel(I::AbstractArray, ix::Integer, iy::Integer)
 
 Evaluate the istropic variation term for the given pixel.
 """
-@inline function tv_base_real_pixel(I::AbstractArray, ix::Int64, iy::Int64)::Float64
+@inline function tv_base_pixel(I::AbstractArray, ix::Integer, iy::Integer)
     nx = size(I, 1)
     ny = size(I, 2)
 
@@ -44,11 +44,11 @@ Evaluate the istropic variation term for the given pixel.
 end
 
 """
-    tv_base_real_pixel(I::AbstractArray, ix::Int64, iy::Int64)
+    tv_base_pixel(I::AbstractArray, ix::Integer, iy::Integer)
 
 Evaluate the gradient of the istropic variation term for the given pixel.
 """
-@inline function tv_base_real_grad_pixel(I::AbstractArray, ix::Int64, iy::Int64)::Float64
+@inline function tv_base_grad_pixel(I::AbstractArray, ix::Integer, iy::Integer)
     nx = size(I, 1)
     ny = size(I, 2)
 
@@ -130,45 +130,45 @@ Evaluate the gradient of the istropic variation term for the given pixel.
 end
 
 """
-    tv_base_real(I::AbstractArray; ex::FLoops's Executor)
+    tv_base(I::AbstractArray; ex::FLoops's Executor)
 
 Base function of the istropic total variation.
 
 # Arguments
 - `I::AbstractArray`: the input two dimensional real image
 """
-@inline function tv_base_real(I::AbstractArray)
+@inline function tv_base(I::AbstractArray)
     value = 0.0
     for iy = 1:size(I, 2), ix = 1:size(I, 1)
-        value += tv_base_real_pixel(I, ix, iy)
+        value += tv_base_pixel(I, ix, iy)
     end
     return value
 end
 
-# Gradient for tv_base_real: Chain Rule
-function ChainRulesCore.rrule(::typeof(tv_base_real), x::AbstractArray)
-    y = tv_base_real(x)
+# Gradient for tv_base: Chain Rule
+function ChainRulesCore.rrule(::typeof(tv_base), x::AbstractArray)
+    y = tv_base(x)
     function pullback(Δy)
         f̄bar = NoTangent()
-        xbar = @thunk(tv_base_real_grad(x) .* Δy)
+        xbar = @thunk(tv_base_grad(x) .* Δy)
         return f̄bar, xbar
     end
     return y, pullback
 end
 
-# Gradient for tv_base_real: Gradient Function
-@inline function tv_base_real_grad(I::AbstractArray)
+# Gradient for tv_base: Gradient Function
+@inline function tv_base_grad(I::AbstractArray)
     nx = size(I, 1)
     ny = size(I, 2)
     grad = zeros(nx, ny)
     for iy = 1:ny, ix = 1:nx
-        @inbounds grad[ix, iy] = tv_base_real_grad_pixel(I, ix, iy)
+        @inbounds grad[ix, iy] = tv_base_grad_pixel(I, ix, iy)
     end
     return grad
 end
 
 """
-    tv_base_real(I::AbstractArray, w::Number; ex::FLoops's Executor)
+    tv_base(I::AbstractArray, w::Number; ex::FLoops's Executor)
 
 Base function of the istropic total variation.
 
@@ -176,15 +176,15 @@ Base function of the istropic total variation.
 - `I::AbstractArray`: the input two dimensional real image
 - `w::Number`: the regularization weight
 """
-@inline function tv_base_real(I::AbstractArray, w::Number)
-    return w * tv_base_real(I)
+@inline function tv_base(I::AbstractArray, w::Number)
+    return w * tv_base(I)
 end
 
-function ChainRulesCore.rrule(::typeof(tv_base_real), x::AbstractArray, w::Number)
-    y = tv_base_real(x, w)
+function ChainRulesCore.rrule(::typeof(tv_base), x::AbstractArray, w::Number)
+    y = tv_base(x, w)
     function pullback(Δy)
         f̄bar = NoTangent()
-        xbar = @thunk(w .* tv_base_real_grad(x) .* Δy)
+        xbar = @thunk(w .* tv_base_grad(x) .* Δy)
         wbar = NoTangent()
         return f̄bar, xbar, wbar
     end
@@ -194,10 +194,10 @@ end
 # Evaluation functions
 #   LinearDomain
 function evaluate(::LinearDomain, reg::TV, skymodel::AbstractImage2DModel, x::AbstractArray)
-    return tv_base_real(transform_linear_forward(skymodel, x), reg.weight)
+    return tv_base(transform_linear_forward(skymodel, x), reg.weight)
 end
 
 #   ParameteDomain
 function evaluate(::ParameterDomain, reg::TV, skymodel::AbstractImage2DModel, x::AbstractArray)
-    return tv_base_real(x, reg.weight)
+    return tv_base(x, reg.weight)
 end
