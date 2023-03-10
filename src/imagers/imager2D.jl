@@ -6,6 +6,7 @@ struct Imager2D <: AbstractImager
     ft::SingleNFFT2D
     datamodels
     regularlizers
+    parallelizer
 end
 
 """
@@ -55,7 +56,7 @@ Returns the cost function.
 - `x::AbstractArray`: the image parameters
 - `imager::Imager2D`: RML Imaging Setting
 """
-function lossfunc(x, imager::Imager2D)
+function lossfunc(x::AbstractArray, imager::Imager2D)
     # get the linear scale image
     x_linear = transform_linear_forward(imager.skymodel, x)
 
@@ -102,11 +103,8 @@ Evaluate chisquares and regularizers from the input image parameters
 - `x::AbstractArray`: the image parameters
 """
 function evaluate(imager::Imager2D, x::AbstractArray)
-    # get the linear scale image
-    x_linear = transform_linear_forward(imager.skymodel, x)
-
     # Get the Stokes I image
-    V = forward(imager.ft, x_linear)
+    V = forward(imager.ft, transform_linear_forward(imager.skymodel, x))
 
     # initialize dict
     outdict = OrderedDict()
