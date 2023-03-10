@@ -33,7 +33,7 @@ end
 function chisquare(datamodel::VisibilityDataModel, V::Vector{ComplexF64}; keywords...)
     model = evaluate(datamodel, V)
     @inbounds sqresid = abs.(model .- datamodel.data) .^ 2 ./ datamodel.variance
-    return sum(sqresid) / datamodel.Ndata
+    return mean(sqresid)
 end
 
 function get_stokesI(visds::DimStack; keywords...)
