@@ -24,6 +24,8 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
 ChainRulesCore = "1"
+DataFrames = "1"
+DimensionalData = "0.24"
 EHTImages = "0.1"
 EHTModels = "0.1"
 EHTNCDBase = "0.1"
@@ -34,6 +36,7 @@ MKL = "0.6"
 NFFT = "0.13"
 Optimization = "3"
 OptimizationOptimJL = "0.1"
+OrderedCollections = "1"
 Zygote = "0.6"
 julia = "1.8"
 
