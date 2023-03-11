@@ -19,8 +19,12 @@ Pkg.add("RMLImaging")
 ## Documentation
 The documentation is in preparation, but docstrings of available functions are listed for the [latest](https://ehtjulia.github.io/RMLImaging.jl/dev) version. The stable version has not been released. 
 
-## Acknowledgement
+## Acknowledgements
 The development of this package has been finantially supported by the following programs.
-- v0.1.0 - v0.1.1: [ALMA North American Development Study Cycle 8](https://science.nrao.edu/facilities/alma/science_sustainability/alma-develop-history), National Radio Astronomy Observatory (NRAO), USA
+- [AST-2107681](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2107681), National Science Foundation, USA: v0.1.2 - present
+- [AST-2034306](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2034306), National Science Foundation, USA: v0.1.2 - present
+- [OMA-2029670](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2029670), National Science Foundation, USA: v0.1.2 - present
+- [AST-1935980](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1935980), National Science Foundation, USA: v0.1.2 - present
+- [ALMA North American Development Study Cycle 8](https://science.nrao.edu/facilities/alma/science_sustainability/alma-develop-history), National Radio Astronomy Observatory, USA: v0.1.0 - v0.1.2
 
 The National Radio Astronomy Observatory is a facility of the National Science Foundation operated under cooperative agreement by Associated Universities, Inc.
