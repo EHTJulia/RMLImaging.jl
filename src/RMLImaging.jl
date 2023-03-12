@@ -3,7 +3,7 @@ module RMLImaging
 using Base
 using ChainRulesCore
 using DataFrames
-using DimensionalData
+using EHTDimensionalData
 using EHTImages
 using EHTModels
 using EHTUtils
