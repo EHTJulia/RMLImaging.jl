@@ -1,8 +1,7 @@
 name: CI
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     tags: ['*']
   pull_request:
 concurrency:
@@ -25,18 +24,19 @@ jobs:
         arch:
           - x64
     steps:
-      - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@v1
+      - uses: actions/checkout@v6
+      - uses: julia-actions/setup-julia@v3
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
-      - uses: julia-actions/cache@v1
+      - uses: julia-actions/cache@v3
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v6
         with:
           files: lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
   docs:
     name: Documentation
     runs-on: ubuntu-latest
@@ -44,8 +44,8 @@ jobs:
       contents: write
       statuses: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@v1
+      - uses: actions/checkout@v6
+      - uses: julia-actions/setup-julia@v3
         with:
           version: '1'
       - uses: julia-actions/julia-buildpkg@v1
@@ -53,9 +53,10 @@ jobs:
         env:
           PYTHON: ""
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
-          julia --project=docs -e '
-            using Documenter: DocMeta, doctest
-            using RMLImaging
-            DocMeta.setdocmeta!(RMLImaging, :DocTestSetup, :(using RMLImaging); recursive=true)
-            doctest(RMLImaging)'
+      - name: Run doctests
+        shell: julia --color=yes --project=docs {0}
+        run: |
+          using Documenter: DocMeta, doctest
+          using RMLImaging
+          DocMeta.setdocmeta!(RMLImaging, :DocTestSetup, :(using RMLImaging); recursive=true)
+          doctest(RMLImaging)
